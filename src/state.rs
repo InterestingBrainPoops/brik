@@ -16,3 +16,43 @@ pub enum Square {
     X,
     O,
 }
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Move {
+    piece: Turn,
+    location: Coordinate,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Coordinate {
+    x: usize,
+    y: usize,
+}
+impl From<Turn> for Square {
+    fn from(item: Turn) -> Self {
+        match item {
+            Turn::X => Self::X,
+            Turn::O => Self::O,
+        }
+    }
+}
+
+impl Turn {
+    pub fn flip(&mut self) {
+        match self {
+            Turn::O => *self = Turn::X,
+            Turn::X => *self = Turn::O,
+        }
+    }
+}
+
+impl State {
+    pub fn make_move(&mut self, move_to_make: Move) {
+        self.turn.flip();
+        self.pieces[move_to_make.location.y][move_to_make.location.x] = move_to_make.piece.into();
+    }
+    pub fn undo_move(&mut self, move_to_undo: Move) {
+        self.turn.flip();
+        self.pieces[move_to_undo.location.y][move_to_undo.location.x] = move_to_undo.piece.into();
+    }
+}
